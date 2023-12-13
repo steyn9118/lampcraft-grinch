@@ -6,11 +6,12 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
 import net.kyori.adventure.text.Component;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import steyn91.grinchplugin.TopUtils.Top;
 
 public class Arena {
 
@@ -26,7 +27,7 @@ public class Arena {
 
     // Динамические
     private final List<Player> players = new ArrayList<>();
-    private final HashMap<Player, Integer> scores = new HashMap<>();
+    private final Top top = new Top();
     private boolean isGameActive = false;
     private boolean preGameCountdownActive = false;
     private int presentsAmount;
@@ -36,7 +37,6 @@ public class Arena {
     // Технические
     GrinchPlugin plugin = GrinchPlugin.getPlugin();
     World world = Bukkit.getWorld("world");
-    TextComponent presentCollectedMessage = Component.text("Ты подобрал подарок!").color(NamedTextColor.YELLOW);
     TextComponent joinMessage = Component.text("Ты присоединился к игре").color(NamedTextColor.GRAY);
     TextComponent leaveMessage = Component.text("Ты покинул игру").color(NamedTextColor.GRAY);
     TextComponent winMessage = Component.text("Ты победил!").color(NamedTextColor.GREEN);
@@ -93,7 +93,7 @@ public class Arena {
         }
 
         players.add(p);
-        scores.put(p, 0);
+        top.addEntry(p, 0);
         p.teleport(startLocation);
         p.sendMessage(joinMessage);
         p.setMetadata("playingGrinch", new FixedMetadataValue(plugin, true));
@@ -105,7 +105,7 @@ public class Arena {
     public void leave(Player p){
 
         players.remove(p);
-        scores.remove(p);
+        top.removeEntry(p);
         p.teleport(lobbyLocation);
         p.sendMessage(leaveMessage);
         p.setLevel(0);
@@ -165,16 +165,18 @@ public class Arena {
 
             @Override
             public void run() {
+
                 if (gameCountdown == 0 || players.size() < 2 || presentsCollected == presentsAmount || foreStop) {
                     stopGame();
                     this.cancel();
                 }
 
                 gameCountdown -= 1;
+
                 for (Player player : players){
                     player.setExp((float)gameCountdown / gameMaxTime);
                     player.setLevel(gameCountdown);
-                    player.sendActionBar(Component.text("Ты собрал " + scores.get(player).toString() + " подарков").color(NamedTextColor.YELLOW));
+                    player.sendActionBar(Component.text("Ты собрал " + top.getEntry(player).getScore() + " подарков").color(NamedTextColor.YELLOW));
                 }
             }
         };
@@ -184,30 +186,23 @@ public class Arena {
 
     private void stopGame(){
 
-        // Определяем победителя
-        int maxScore = 0;
-        Player winer = null;
-
         for (Player player : players){
+
             player.teleport(lobbyLocation);
             player.setLevel(0);
             player.setExp(0);
             player.removeMetadata("playingGrinch", plugin);
-
-            if (maxScore > scores.get(player)) continue;
-            maxScore = scores.get(player);
-            winer = player;
+            
         }
 
-        if (winer != null){
-            for (Player player : players){
-                if (player == winer) player.sendMessage(winMessage);
-                else player.sendMessage(loseMessage);
-            }
-        }
+        top.sort();
+        top.informParticipants(players,winMessage, loseMessage);
+        top.showTop(3, players);
+        top.broadcastWinner(players);
+
 
         players.clear();
-        scores.clear();
+        top.clear();
         isGameActive = false;
 
     }
@@ -218,8 +213,7 @@ public class Arena {
         if (!presentsLocations.contains(loc)) return;
         world.getBlockAt(loc).setType(Material.AIR);
         player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 100, 1);
-        scores.put(player, scores.get(player) + 1);
-        player.sendMessage(presentCollectedMessage);
+        top.incrementScore(player, 1);
         presentsCollected += 1;
 
     }

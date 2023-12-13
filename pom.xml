@@ -6,7 +6,7 @@
 
     <groupId>steyn91</groupId>
     <artifactId>GrinchPlugin</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>GrinchPlugin</name>
@@ -54,6 +54,10 @@
 
     <repositories>
         <repository>
+            <id>krypton</id>
+            <url>https://repo.kryptonmc.org/releases</url>
+        </repository>
+        <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
@@ -64,6 +68,13 @@
     </repositories>
 
     <dependencies>
+        <!-- TAB -->
+        <dependency>
+            <groupId>me.neznamy</groupId>
+            <artifactId>tab-api</artifactId>
+            <version>4.0.2</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- HeadDatabase-API -->
         <dependency>
             <groupId>com.arcaniax</groupId>
