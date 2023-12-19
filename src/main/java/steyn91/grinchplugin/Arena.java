@@ -1,5 +1,10 @@
 package steyn91.grinchplugin;
 
+import com.xxmicloxx.NoteBlockAPI.model.Playlist;
+import com.xxmicloxx.NoteBlockAPI.model.RepeatMode;
+import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
+import me.neznamy.tab.api.TabAPI;
+import me.neznamy.tab.api.scoreboard.ScoreboardManager;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -13,6 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import steyn91.grinchplugin.TopUtils.Top;
 
+@SuppressWarnings("DataFlowIssue")
 public class Arena {
 
     // Из конфига
@@ -35,8 +41,10 @@ public class Arena {
     private boolean foreStop = false;
 
     // Технические
+    RadioSongPlayer radioSongPlayer;
     GrinchPlugin plugin = GrinchPlugin.getPlugin();
     World world = Bukkit.getWorld("world");
+    TabAPI tabAPI = TabAPI.getInstance();
     TextComponent joinMessage = Component.text("Ты присоединился к игре").color(NamedTextColor.GRAY);
     TextComponent leaveMessage = Component.text("Ты покинул игру").color(NamedTextColor.GRAY);
     TextComponent winMessage = Component.text("Ты победил!").color(NamedTextColor.GREEN);
@@ -77,7 +85,7 @@ public class Arena {
         this.lobbyLocation = lobbyLocation;
         this.startLocation = startLocation;
 
-
+        this.radioSongPlayer = new RadioSongPlayer(new Playlist(plugin.getSong()));
     }
 
     // Это база
@@ -91,12 +99,15 @@ public class Arena {
             p.sendMessage(gameActiveMessage);
             return;
         }
+        if (players.contains(p)) return;
 
         players.add(p);
         top.addEntry(p, 0);
         p.teleport(startLocation);
         p.sendMessage(joinMessage);
         p.setMetadata("playingGrinch", new FixedMetadataValue(plugin, true));
+
+        radioSongPlayer.addPlayer(p);
 
         if (players.size() >= minPlayers) startLobbyCountdown();
 
@@ -111,6 +122,8 @@ public class Arena {
         p.setLevel(0);
         p.setExp(0);
         p.removeMetadata("playingGrinch", plugin);
+        tabAPI.getScoreboardManager().resetScoreboard(tabAPI.getPlayer(p.getUniqueId()));
+        radioSongPlayer.removePlayer(p);
 
     }
 
@@ -158,6 +171,8 @@ public class Arena {
         Utils.clearBlocks(presentsLocations);
         presentsAmount = Utils.fillWithPresents(presentsLocations, 50);
         presentsCollected = 0;
+        radioSongPlayer.setRepeatMode(RepeatMode.ALL);
+        radioSongPlayer.setPlaying(true);
 
         isGameActive = true;
         BukkitRunnable gameTimer = new BukkitRunnable() {
@@ -172,6 +187,8 @@ public class Arena {
                 }
 
                 gameCountdown -= 1;
+
+                top.showScoreBoard(players, tabAPI, String.valueOf(id));
 
                 for (Player player : players){
                     player.setExp((float)gameCountdown / gameMaxTime);
@@ -192,7 +209,8 @@ public class Arena {
             player.setLevel(0);
             player.setExp(0);
             player.removeMetadata("playingGrinch", plugin);
-            
+            tabAPI.getScoreboardManager().resetScoreboard(tabAPI.getPlayer(player.getUniqueId()));
+            radioSongPlayer.removePlayer(player);
         }
 
         top.sort();
@@ -204,12 +222,12 @@ public class Arena {
         players.clear();
         top.clear();
         isGameActive = false;
+        radioSongPlayer.setPlaying(false);
 
     }
 
     // Связанные с игрой
     public void collectPresent(Location loc, Player player){
-        plugin.getLogger().info(loc.toString());
         if (!presentsLocations.contains(loc)) return;
         world.getBlockAt(loc).setType(Material.AIR);
         player.playSound(player, Sound.ENTITY_ITEM_PICKUP, 100, 1);

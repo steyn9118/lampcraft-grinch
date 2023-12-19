@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import steyn91.grinchplugin.Arena;
 import steyn91.grinchplugin.GrinchPlugin;
 import steyn91.grinchplugin.Utils;
@@ -27,5 +28,9 @@ public class PlayerListener implements Listener {
         if (Utils.getArenaOfPlayer(event.getPlayer()) != null) Utils.getArenaOfPlayer(event.getPlayer()).collectPresent(event.getClickedBlock().getLocation(), event.getPlayer());
     }
 
+    @EventHandler
+    public void playerLeaveEvent(PlayerQuitEvent event){
+        if (Utils.getArenaOfPlayer(event.getPlayer()) != null) Utils.getArenaOfPlayer(event.getPlayer()).leave(event.getPlayer());
+    }
 
 }

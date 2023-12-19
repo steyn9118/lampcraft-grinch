@@ -1,5 +1,7 @@
 package steyn91.grinchplugin;
 
+import com.xxmicloxx.NoteBlockAPI.model.Song;
+import com.xxmicloxx.NoteBlockAPI.utils.NBSDecoder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +18,11 @@ public final class GrinchPlugin extends JavaPlugin {
 
     private static final List<Arena> arenas = new ArrayList<>();
     private static GrinchPlugin plugin;
+
+    private Song song;
+    public Song getSong(){
+        return song;
+    }
 
     public static GrinchPlugin getPlugin() {
         return plugin;
@@ -36,6 +43,8 @@ public final class GrinchPlugin extends JavaPlugin {
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
+
+        song = NBSDecoder.parse(new File(GrinchPlugin.getPlugin().getDataFolder() + "/song.nbs"));
 
         loadArenas(false);
     }

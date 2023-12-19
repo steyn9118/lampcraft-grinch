@@ -2,6 +2,8 @@ name: GrinchPlugin
 version: '${project.version}'
 main: steyn91.grinchplugin.GrinchPlugin
 api-version: '1.18'
+depend:
+  - TAB
 commands:
   grinch:
     description: huy

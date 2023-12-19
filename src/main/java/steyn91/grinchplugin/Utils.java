@@ -1,5 +1,6 @@
 package steyn91.grinchplugin;
 
+import com.xxmicloxx.NoteBlockAPI.model.Song;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
@@ -14,7 +15,7 @@ public class Utils implements Listener {
 
     // Metadata: "playingGrinch"(true/null)
 
-    private static GrinchPlugin plugin = GrinchPlugin.getPlugin();
+    private static final GrinchPlugin plugin = GrinchPlugin.getPlugin();
     private static HeadDatabaseAPI headAPI;
 
     @EventHandler
@@ -22,7 +23,7 @@ public class Utils implements Listener {
         headAPI = new HeadDatabaseAPI();
     }
 
-    private static List<String> presentSkins = new ArrayList<>();{
+    private static final List<String> presentSkins = new ArrayList<>();{
         presentSkins.add("23994");
         presentSkins.add("24021");
         presentSkins.add("24048");

@@ -6,7 +6,7 @@
 
     <groupId>steyn91</groupId>
     <artifactId>GrinchPlugin</artifactId>
-    <version>0.2</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
 
     <name>GrinchPlugin</name>
@@ -54,6 +54,10 @@
 
     <repositories>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>krypton</id>
             <url>https://repo.kryptonmc.org/releases</url>
         </repository>
@@ -68,6 +72,13 @@
     </repositories>
 
     <dependencies>
+        <!-- NoteBlockAPI -->
+        <dependency>
+            <groupId>com.github.koca2000</groupId>
+            <artifactId>NoteBlockAPI</artifactId>
+            <version>1.6.2</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- TAB -->
         <dependency>
             <groupId>me.neznamy</groupId>

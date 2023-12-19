@@ -1,5 +1,8 @@
 package steyn91.grinchplugin.TopUtils;
 
+import me.neznamy.tab.api.TabAPI;
+import me.neznamy.tab.api.scoreboard.Scoreboard;
+import me.neznamy.tab.api.scoreboard.ScoreboardManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -8,7 +11,9 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
+@SuppressWarnings("DataFlowIssue")
 public class Top {
 
     private final List<TopEntry> places = new ArrayList<>();
@@ -83,6 +88,17 @@ public class Top {
     public void broadcastWinner(List<Player> players){
         for (Player player : players){
             player.showTitle(Title.title(Component.text("Победил " + places.get(0).getPlayer().getName()).color(NamedTextColor.GREEN), Component.text("Собрав " + places.get(0).getScore() + " подарков").color(NamedTextColor.GREEN)));
+        }
+    }
+
+    public void showScoreBoard(List<Player> players, TabAPI api, String id){
+        List<String> scoreBoardStrings = new ArrayList<>(places.size());
+        for (TopEntry entry : places){
+            scoreBoardStrings.add(entry.getPlayer().getName() + " - " + entry.getScore());
+        }
+        Scoreboard scoreboard = api.getScoreboardManager().createScoreboard(id, "Счёт", scoreBoardStrings);
+        for (Player player : players){
+                api.getScoreboardManager().showScoreboard(api.getPlayer(player.getName()), scoreboard);
         }
     }
 }
