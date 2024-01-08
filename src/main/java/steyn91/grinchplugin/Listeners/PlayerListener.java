@@ -17,8 +17,8 @@ public class PlayerListener implements Listener {
         // Не даёт уйти от спавна пока игра не началась
         if (Utils.getArenaOfPlayer(event.getPlayer()) == null) return;
         Arena arena = Utils.getArenaOfPlayer(event.getPlayer());
-        if (!arena.isGameActive() && Utils.findDistance(arena.getStartLocation(), event.getPlayer().getLocation()) > 3){
-            event.getPlayer().teleport(arena.getStartLocation());
+        if (!arena.isGameActive() && Utils.findDistance(arena.getStartLocation(), event.getPlayer().getLocation()) > 5){
+            event.getPlayer().teleport(arena.getStartLocation().setDirection(event.getPlayer().getLocation().getDirection()));
         }
     }
 

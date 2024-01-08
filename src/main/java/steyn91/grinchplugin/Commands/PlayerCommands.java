@@ -37,23 +37,6 @@ public class PlayerCommands implements CommandExecutor {
             return false;
         }
 
-        if (command.getName().equals("gradmin")){
-
-            if (!sender.hasPermission("gradmin")) return false;
-
-            switch (args.length){
-
-                case (0):
-                    sender.sendMessage("gradmin reload");
-
-                case (1):
-                    if (args[0].equals("reload")){
-                        GrinchPlugin.loadArenas(true);
-                    }
-            }
-            return false;
-        }
-
         return false;
     }
 }

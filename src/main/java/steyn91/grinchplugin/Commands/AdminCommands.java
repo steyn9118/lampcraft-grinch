@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import steyn91.grinchplugin.GrinchPlugin;
+import steyn91.grinchplugin.Stats.StatsManager;
 
 public class AdminCommands implements CommandExecutor {
 
@@ -18,10 +19,16 @@ public class AdminCommands implements CommandExecutor {
 
                 case (0):
                     sender.sendMessage("gradmin reload");
+                    sender.sendMessage("gradmin remove <playername>");
 
                 case (1):
                     if (args[0].equals("reload")){
                         GrinchPlugin.loadArenas(true);
+                    }
+
+                case (2):
+                    if (args[0].equals("remove")){
+                        StatsManager.removeStat(args[1]);
                     }
             }
             return false;

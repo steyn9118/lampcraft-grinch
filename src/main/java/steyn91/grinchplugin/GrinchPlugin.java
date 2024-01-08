@@ -9,6 +9,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import steyn91.grinchplugin.Commands.AdminCommands;
 import steyn91.grinchplugin.Commands.PlayerCommands;
 import steyn91.grinchplugin.Listeners.PlayerListener;
+import steyn91.grinchplugin.Stats.Database;
+import steyn91.grinchplugin.Stats.PlaceholderManager;
+import steyn91.grinchplugin.Stats.StatsManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ public final class GrinchPlugin extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getCommand("grinch").setExecutor(new PlayerCommands());
         getCommand("gradmin").setExecutor(new AdminCommands());
+        new PlaceholderManager().register();
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -47,9 +51,18 @@ public final class GrinchPlugin extends JavaPlugin {
         song = NBSDecoder.parse(new File(GrinchPlugin.getPlugin().getDataFolder() + "/song.nbs"));
 
         loadArenas(false);
+
+        Database.initDatabase();
+        StatsManager.startSavingCycle();
+    }
+
+    @Override
+    public void onDisable(){
+        StatsManager.saveAllToDB();
     }
 
     public static void loadArenas(boolean shouldReload){
+
         if (shouldReload){
             for (Arena arena : arenas){
                 arena.forceStop();
