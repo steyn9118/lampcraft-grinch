@@ -90,7 +90,7 @@ public class Top {
             player.sendMessage(Component.text("+----- ТОП -----+").color(NamedTextColor.YELLOW));
             for (int i = 0; i < entries; i++) {
 
-                player.sendMessage(Component.text((i + 1) + ". " + places.get(i).getPlayer().getName() + " ".repeat(Math.max(0, maxLength - places.get(i).getPlayer().getName().length())) + " - " + places.get(i).getScore()).color(NamedTextColor.WHITE));
+                player.sendMessage(Component.text((i + 1) + ". " + places.get(i).getPlayer().getName() + " ".repeat(Math.max(0, maxLength - places.get(i).getPlayer().getName().length())) + " - " + places.get(i).getScore()).color(NamedTextColor.GRAY));
             }
             player.sendMessage(Component.text("+----- --- -----+").color(NamedTextColor.YELLOW));
         }
