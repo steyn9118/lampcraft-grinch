@@ -23,8 +23,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -53,22 +53,27 @@
     </build>
 
     <repositories>
+        <!-- NoteBlockAPI -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <!-- TAB -->
         <repository>
             <id>krypton</id>
             <url>https://repo.kryptonmc.org/releases</url>
         </repository>
+        <!-- Paper -->
         <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <!-- Так надо -->
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <!-- PAPI -->
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
@@ -76,7 +81,6 @@
     </repositories>
 
     <dependencies>
-
         <!-- NoteBlockAPI -->
         <dependency>
             <groupId>com.github.koca2000</groupId>

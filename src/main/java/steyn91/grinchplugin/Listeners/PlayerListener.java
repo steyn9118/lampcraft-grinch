@@ -28,7 +28,7 @@ public class PlayerListener implements Listener {
     public void playerRightClickBlock(PlayerInteractEvent event){
         Player player = event.getPlayer();
         Arena arena = Utils.getArenaOfPlayer(player);
-        if (arena == null) return;
+        if (arena == null || event.getClickedBlock() == null) return;
         boolean clickedBlockIsHead = event.getClickedBlock().getBlockData().getMaterial().equals(Material.PLAYER_HEAD);
         if (!event.hasBlock() || !clickedBlockIsHead || !event.getAction().isRightClick()) return;
         arena.collectPresent(event.getClickedBlock().getLocation(), player);
