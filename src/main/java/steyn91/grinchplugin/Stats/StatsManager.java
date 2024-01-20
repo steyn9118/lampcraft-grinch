@@ -95,6 +95,7 @@ public class StatsManager {
         for (PlayerStatsModel stat : cache){
             Database.updatePlayerStat(stat);
         }
+        // Способ очистки кэша ПОЛНАЯ ХУЙНЯ!!! Очень нужно будет переписать на CacheEntry с датой обновления записи
         cache.clear();
     }
 

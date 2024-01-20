@@ -23,6 +23,7 @@ public class Arena {
 
     // Из конфига
     private final int id;
+    private final int spawnSafeRadius;
     private final int minPlayers;
     private final int maxPlayers;
     private final List<Location> presentsLocations;
@@ -42,19 +43,19 @@ public class Arena {
     private BossBar activeBossBar;
 
     // Технические
-    RadioSongPlayer radioSongPlayer;
-    GrinchPlugin plugin = GrinchPlugin.getPlugin();
-    World world = Bukkit.getWorld("world");
-    TabAPI tabAPI = TabAPI.getInstance();
-    TextComponent joinMessage = Component.text("Ты присоединился к игре").color(NamedTextColor.GRAY);
-    TextComponent leaveMessage = Component.text("Ты покинул игру").color(NamedTextColor.GRAY);
-    TextComponent winMessage = Component.text("Ты победил!").color(NamedTextColor.GREEN);
-    TextComponent loseMessage = Component.text("Ты проиграл").color(NamedTextColor.RED);
-    TextComponent fullArenaMessage = Component.text("На этой арене уже нет мест!").color(NamedTextColor.RED);
-    TextComponent gameActiveMessage = Component.text("На этой арене уже идёт игра!").color(NamedTextColor.RED);
-    TextComponent arenaReloadMessage = Component.text("Плагин перезагружается!").color(NamedTextColor.RED);
-    BossBar waitingForPlayers = BossBar.bossBar(Component.text("Ждём игроков..."), 1, BossBar.Color.WHITE, BossBar.Overlay.NOTCHED_6);
-    BossBar gameStarting = BossBar.bossBar(Component.text("Игра скоро начнётся!"), 1, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_6);
+    private final RadioSongPlayer radioSongPlayer;
+    private final GrinchPlugin plugin = GrinchPlugin.getPlugin();
+    private final World world = Bukkit.getWorld("world");
+    private final TabAPI tabAPI = TabAPI.getInstance();
+    private final TextComponent joinMessage = Component.text("Ты присоединился к игре").color(NamedTextColor.GRAY);
+    private final TextComponent leaveMessage = Component.text("Ты покинул игру").color(NamedTextColor.GRAY);
+    private final TextComponent winMessage = Component.text("Ты победил!").color(NamedTextColor.GREEN);
+    private final TextComponent loseMessage = Component.text("Ты проиграл").color(NamedTextColor.RED);
+    private final TextComponent fullArenaMessage = Component.text("На этой арене уже нет мест!").color(NamedTextColor.RED);
+    private final TextComponent gameActiveMessage = Component.text("На этой арене уже идёт игра!").color(NamedTextColor.RED);
+    private final TextComponent arenaReloadMessage = Component.text("Плагин перезагружается!").color(NamedTextColor.RED);
+    private final BossBar waitingForPlayers = BossBar.bossBar(Component.text("Ждём игроков..."), 1, BossBar.Color.WHITE, BossBar.Overlay.NOTCHED_6);
+    private final BossBar gameStarting = BossBar.bossBar(Component.text("Игра скоро начнётся!"), 1, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_6);
 
     public int getId(){
         return id;
@@ -68,10 +69,13 @@ public class Arena {
     public boolean isGameActive() {
         return isGameActive;
     }
+    public int getSpawnSafeRadius() {
+        return spawnSafeRadius;
+    }
 
     // Конструктор
     public Arena(int id,
-                 int minPlayers,
+                 int spawnSafeRadius, int minPlayers,
                  int maxPlayers,
                  List<Location> presentsLocations,
                  int preGameWaitingTime,
@@ -80,6 +84,7 @@ public class Arena {
                  Location startLocation){
 
         this.id = id;
+        this.spawnSafeRadius = spawnSafeRadius;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.presentsLocations = presentsLocations;
@@ -89,6 +94,7 @@ public class Arena {
         this.startLocation = startLocation;
 
         this.radioSongPlayer = new RadioSongPlayer(new Playlist(plugin.getSong()));
+        this.radioSongPlayer.setCategory(com.xxmicloxx.NoteBlockAPI.model.SoundCategory.RECORDS);
 
         activeBossBar = waitingForPlayers;
     }

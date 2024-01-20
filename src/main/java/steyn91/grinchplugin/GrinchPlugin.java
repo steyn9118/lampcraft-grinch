@@ -83,6 +83,7 @@ public final class GrinchPlugin extends JavaPlugin {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             arenas.add(new Arena(
                     config.getInt("id"),
+                    config.getInt("spawnSafeRadius"),
                     config.getInt("minPlayers"),
                     config.getInt("maxPlayers"),
                     (List<Location>) config.getList("presentsLocations"),

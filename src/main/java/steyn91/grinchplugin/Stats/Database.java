@@ -1,7 +1,6 @@
 package steyn91.grinchplugin.Stats;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import steyn91.grinchplugin.GrinchPlugin;
 
 import java.sql.*;
@@ -14,23 +13,32 @@ public class Database {
     // Для получения подключения
     public static Connection getConnection() {
 
-        if (connection != null){
-            return connection;
+        String url = plugin.getConfig().getString("url");
+        assert url != null;
+        String user = plugin.getConfig().getString("user");
+        String pwd = plugin.getConfig().getString("password");
+
+        if (connection == null){
+            // Подключение к БД
+            try {
+                connection = DriverManager.getConnection(url, user, pwd);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            Bukkit.getLogger().info("Подключено к БД");
         }
 
         try {
+            connection.createStatement().execute("SELECT 1");
+        } catch (SQLException e) {
             // Подключение к БД
-            String url = plugin.getConfig().getString("url");
-            String user = plugin.getConfig().getString("user");
-            String pwd = plugin.getConfig().getString("password");
-            connection = DriverManager.getConnection(url, user, pwd);
+            try {
+                connection = DriverManager.getConnection(url, user, pwd);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             Bukkit.getLogger().info("Подключено к БД");
         }
-        catch (SQLException ex){
-            Bukkit.getLogger().warning("Ошибка при подключении к БД!");
-            ex.printStackTrace();
-        }
-
         return connection;
     }
 
@@ -61,8 +69,10 @@ public class Database {
 
                 statsModel = new PlayerStatsModel(
                         resultSet.getString("playerName"),
-                        resultSet.getInt("wins"), resultSet.getInt("games"),
-                        resultSet.getInt("presentsAll"), resultSet.getInt("presentsOneGame"),
+                        resultSet.getInt("wins"),
+                        resultSet.getInt("games"),
+                        resultSet.getInt("presentsAll"),
+                        resultSet.getInt("presentsOneGame"),
                         resultSet.getDate("lastUpdate"));
 
                 statement.close();

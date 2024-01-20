@@ -1,6 +1,7 @@
 package steyn91.grinchplugin.Listeners;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,22 +16,28 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent event){
         // Не даёт уйти от спавна пока игра не началась
-        if (Utils.getArenaOfPlayer(event.getPlayer()) == null) return;
-        Arena arena = Utils.getArenaOfPlayer(event.getPlayer());
-        if (!arena.isGameActive() && Utils.findDistance(arena.getStartLocation(), event.getPlayer().getLocation()) > 5){
-            event.getPlayer().teleport(arena.getStartLocation().setDirection(event.getPlayer().getLocation().getDirection()));
+        Player player = event.getPlayer();
+        Arena arena = Utils.getArenaOfPlayer(player);
+        if (arena == null) return;
+        if (!arena.isGameActive() && Utils.findDistance(arena.getStartLocation(), player.getLocation()) > arena.getSpawnSafeRadius()){
+            player.teleport(arena.getStartLocation().setDirection(player.getLocation().getDirection()));
         }
     }
 
     @EventHandler
     public void playerRightClickBlock(PlayerInteractEvent event){
-        if (!event.hasBlock() || !event.getClickedBlock().getBlockData().getMaterial().equals(Material.PLAYER_HEAD) || !event.getAction().isRightClick()) return;
-        if (Utils.getArenaOfPlayer(event.getPlayer()) != null) Utils.getArenaOfPlayer(event.getPlayer()).collectPresent(event.getClickedBlock().getLocation(), event.getPlayer());
+        Player player = event.getPlayer();
+        Arena arena = Utils.getArenaOfPlayer(player);
+        if (arena == null) return;
+        boolean clickedBlockIsHead = event.getClickedBlock().getBlockData().getMaterial().equals(Material.PLAYER_HEAD);
+        if (!event.hasBlock() || !clickedBlockIsHead || !event.getAction().isRightClick()) return;
+        arena.collectPresent(event.getClickedBlock().getLocation(), player);
     }
 
     @EventHandler
     public void playerLeaveEvent(PlayerQuitEvent event){
-        if (Utils.getArenaOfPlayer(event.getPlayer()) != null) Utils.getArenaOfPlayer(event.getPlayer()).leave(event.getPlayer());
+        Player player = event.getPlayer();
+        Arena arena = Utils.getArenaOfPlayer(player);
+        if (arena != null) arena.leave(player);
     }
-
 }
