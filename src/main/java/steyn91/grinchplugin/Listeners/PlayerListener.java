@@ -1,6 +1,7 @@
 package steyn91.grinchplugin.Listeners;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,10 +29,11 @@ public class PlayerListener implements Listener {
     public void playerRightClickBlock(PlayerInteractEvent event){
         Player player = event.getPlayer();
         Arena arena = Utils.getArenaOfPlayer(player);
-        if (arena == null || event.getClickedBlock() == null) return;
-        boolean clickedBlockIsHead = event.getClickedBlock().getBlockData().getMaterial().equals(Material.PLAYER_HEAD);
-        if (!event.hasBlock() || !clickedBlockIsHead || !event.getAction().isRightClick()) return;
-        arena.collectPresent(event.getClickedBlock().getLocation(), player);
+        Block clickedBlock = event.getClickedBlock();
+        if (arena == null || clickedBlock == null) return;
+        boolean clickedBlockIsHead = clickedBlock.getBlockData().getMaterial().equals(Material.PLAYER_HEAD);
+        if (!clickedBlockIsHead || !event.getAction().isRightClick()) return;
+        arena.collectPresent(clickedBlock.getLocation(), player);
     }
 
     @EventHandler

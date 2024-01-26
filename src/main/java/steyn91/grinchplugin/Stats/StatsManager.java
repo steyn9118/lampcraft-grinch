@@ -28,9 +28,7 @@ public class StatsManager {
     }
 
     public static void updateGames(String playerName){
-        if (getStatsByName(playerName) == null){
-            cache.add(new PlayerStatsModel(playerName, 0, 0, 0, 0, new Date()));
-        }
+        if (getStatsByName(playerName) == null) createStat(playerName);
 
         PlayerStatsModel stats = getStatsByName(playerName);
         stats.setGames(stats.getGames() + 1);
@@ -38,9 +36,7 @@ public class StatsManager {
 
     public static void updateWins(String playerName){
 
-        if (getStatsByName(playerName) == null){
-            cache.add(new PlayerStatsModel(playerName, 0, 0, 0, 0, new Date()));
-        }
+        if (getStatsByName(playerName) == null) createStat(playerName);
 
         PlayerStatsModel stats = getStatsByName(playerName);
         stats.setWins(stats.getWins() + 1);
@@ -49,9 +45,7 @@ public class StatsManager {
 
     public static void updatePresentsAll(String playerName, int score){
 
-        if (getStatsByName(playerName) == null){
-            cache.add(new PlayerStatsModel(playerName, 0, 0, 0, 0, new Date()));
-        }
+        if (getStatsByName(playerName) == null) createStat(playerName);
 
         PlayerStatsModel stats = getStatsByName(playerName);
         stats.setPresentsAll(stats.getPresentsAll() + score);
@@ -59,15 +53,17 @@ public class StatsManager {
 
     public static void updatePresentsOneGame(String playerName, int score){
 
-        if (getStatsByName(playerName) == null){
-            cache.add(new PlayerStatsModel(playerName, 0, 0, 0, 0, new Date()));
-        }
+        if (getStatsByName(playerName) == null) createStat(playerName);
 
         PlayerStatsModel stats = getStatsByName(playerName);
 
         if (score <= stats.getPresentsOneGame()) return;
 
         stats.setPresentsOneGame(score);
+    }
+
+    private static void createStat(String playerName){
+        cache.add(new PlayerStatsModel(playerName, 0, 0, 0, 0, new Date()));
     }
 
     public static void removeStat(String playerName){
@@ -98,5 +94,4 @@ public class StatsManager {
         // Способ очистки кэша ПОЛНАЯ ХУЙНЯ!!! Очень нужно будет переписать на CacheEntry с датой обновления записи
         cache.clear();
     }
-
 }
